@@ -22,6 +22,18 @@ variable "rgName" {
   default = {env = "test"}
 }
 variable "region" {}
+variable "thirdDiskName" {
+  type = string	
+}
+
+variable "thirdDiskSize" {
+  type = number	
+}
+
+variable "tagged" {
+  type = bool
+  default = true
+}
 
 resource "azurerm_resource_group" "example" {
   name     = var.rgName["env"]
@@ -69,5 +81,18 @@ resource "azurerm_managed_disk" "example2" {
   create_option        = "Empty"
   disk_size_gb         = var.secondDiskAttribute[1]
 
-  tags = var.storage_disk["data0"]
+  tags = var.storage_disk["data1"]
+}
+
+resource "azurerm_managed_disk" "example3" {
+  name                 = var.thirdDiskName
+  location             = var.region
+  resource_group_name  = azurerm_resource_group.example.name
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = var.thirdDiskSize
+
+  tags = {
+    tagged = var.tagged
+  }
 }
